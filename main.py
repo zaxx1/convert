@@ -7,6 +7,7 @@ def convert_format(input_file, output_file):
     try:
         with open(input_file, 'r') as file:
             lines = file.readlines()
+        print(f"File {input_file} berhasil dibaca.")
     except FileNotFoundError:
         print(f"File {input_file} tidak ditemukan.")
         return
@@ -18,8 +19,12 @@ def convert_format(input_file, output_file):
                 # Menghapus spasi ekstra di awal dan akhir baris
                 line = line.strip()
 
+                # Debug: Mencetak setiap baris yang sedang diproses
+                print(f"Memproses baris: {line}")
+
                 # Mengabaikan baris yang berisi token, private key, wallet address, atau points
                 if re.search(r'(Token:|Wallet Private Key:|Wallet Address:|Points:)', line):
+                    print(f"Baris diabaikan: {line}")
                     continue  # Skip baris ini dan lanjutkan ke baris berikutnya
                 
                 # Menentukan pola regex untuk menemukan email dan password dalam berbagai format
@@ -35,6 +40,9 @@ def convert_format(input_file, output_file):
                     
                     # Menambahkan delay untuk memisahkan proses lebih jelas
                     time.sleep(1)  # Delay selama 1 detik
+                    
+                    # Debug: Menampilkan hasil yang disimpan
+                    print(f"Menulis ke file: {email},{password}")
                 else:
                     print(f"Tidak dapat memproses baris: {line}")
             
