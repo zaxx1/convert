@@ -16,14 +16,18 @@ def convert_format(input_file, output_file):
             for line in lines:
                 # Menghapus spasi ekstra di awal dan akhir baris
                 line = line.strip()
+
+                # Mengabaikan baris yang berisi token, private key, wallet address, atau points
+                if re.search(r'(Token:|Wallet Private Key:|Wallet Address:|Points:)', line):
+                    continue  # Skip baris ini dan lanjutkan ke baris berikutnya
                 
-                # Menentukan pola untuk menemukan email dan password
-                # Pola ini mencoba menemukan email dan password yang dipisahkan oleh spasi atau karakter lain
-                match = re.match(r'(\S+@\S+\.\S+)\s+(\S+)', line)
+                # Menentukan pola regex untuk menemukan email dan password dalam berbagai format
+                email_password_match = re.match(r'.*Email:\s*(\S+@\S+\.\S+)\s*Password:\s*(\S+)', line)
                 
-                if match:
-                    email = match.group(1)  # Menyimpan bagian email
-                    password = match.group(2)  # Menyimpan bagian password
+                # Jika ditemukan email dan password dalam baris tersebut
+                if email_password_match:
+                    email = email_password_match.group(1)  # Menyimpan email
+                    password = email_password_match.group(2)  # Menyimpan password
                     output_file.write(f'{email},{password}\n')  # Menulis dalam format email,password
                 else:
                     print(f"Tidak dapat memproses baris: {line}")
