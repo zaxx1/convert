@@ -12,6 +12,10 @@ def convert_format(input_file, output_file):
         print(f"File {input_file} tidak ditemukan.")
         return
 
+    # Variabel untuk menyimpan email sementara
+    email = None
+    password = None
+
     # Membuka file 'account.txt' untuk menulis hasil
     try:
         with open(output_file, 'w') as output_file:
@@ -27,25 +31,32 @@ def convert_format(input_file, output_file):
                     print(f"Baris diabaikan: {line}")
                     continue  # Skip baris ini dan lanjutkan ke baris berikutnya
                 
-                # Menentukan pola regex untuk menemukan email dan password dalam berbagai format
-                email_password_match = re.match(r'.*Email:\s*(\S+@\S+\.\S+)\s*Password:\s*(\S+)', line)
-                
-                # Jika ditemukan email dan password dalam baris tersebut
-                if email_password_match:
-                    email = email_password_match.group(1)  # Menyimpan email
-                    password = email_password_match.group(2)  # Menyimpan password
+                # Jika ditemukan baris dengan Email
+                email_match = re.match(r'Email:\s*(\S+@\S+\.\S+)', line)
+                if email_match:
+                    email = email_match.group(1)  # Menyimpan email
+                    continue  # Lanjutkan ke baris berikutnya untuk menunggu password
+
+                # Jika ditemukan baris dengan Password
+                password_match = re.match(r'Password:\s*(\S+)', line)
+                if password_match and email:
+                    password = password_match.group(1)  # Menyimpan password
                     
                     # Menulis dalam format email,password ke file output
                     output_file.write(f'{email},{password}\n')  
                     
-                    # Menambahkan delay untuk memisahkan proses lebih jelas
-                    time.sleep(1)  # Delay selama 1 detik
-                    
                     # Debug: Menampilkan hasil yang disimpan
                     print(f"Menulis ke file: {email},{password}")
+
+                    # Reset email dan password untuk pemrosesan berikutnya
+                    email = None
+                    password = None
+                    
+                    # Menambahkan delay 10 detik
+                    time.sleep(10)  # Delay selama 10 detik
                 else:
                     print(f"Tidak dapat memproses baris: {line}")
-            
+
             print(f"Proses selesai. Hasil disimpan di {output_file.name}")
     except Exception as e:
         print(f"Terjadi kesalahan saat menulis ke file: {e}")
