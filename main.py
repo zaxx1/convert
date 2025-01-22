@@ -1,4 +1,5 @@
 import re
+import time
 
 # Fungsi untuk mengubah format dan menyimpan hasilnya
 def convert_format(input_file, output_file):
@@ -28,9 +29,15 @@ def convert_format(input_file, output_file):
                 if email_password_match:
                     email = email_password_match.group(1)  # Menyimpan email
                     password = email_password_match.group(2)  # Menyimpan password
-                    output_file.write(f'{email},{password}\n')  # Menulis dalam format email,password
+                    
+                    # Menulis dalam format email,password ke file output
+                    output_file.write(f'{email},{password}\n')  
+                    
+                    # Menambahkan delay untuk memisahkan proses lebih jelas
+                    time.sleep(1)  # Delay selama 1 detik
                 else:
                     print(f"Tidak dapat memproses baris: {line}")
+            
             print(f"Proses selesai. Hasil disimpan di {output_file.name}")
     except Exception as e:
         print(f"Terjadi kesalahan saat menulis ke file: {e}")
